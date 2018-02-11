@@ -7,7 +7,8 @@ public class Controller : MonoBehaviour {
 	const float TOP_SPEED = 4.5f;
 	const float SPEED_DAMPING = 0.25f;
 	const float MAX_JUMP_TIME = 1f;
-	const float JUMP_FORCE = 3f;
+	const float JUMP_FORCE = 100f;
+	const float GROUND_RAY_LENGTH = 0.25f;
 	Rigidbody2D body;
 	BoxCollider2D boxCollider;
 	LayerMask groundLayer;
@@ -20,8 +21,8 @@ public class Controller : MonoBehaviour {
 	}
 	
 	bool IsGrounded() {
-		Vector3 lineEnd = new Vector3( boxCollider.bounds.center.x, boxCollider.bounds.min.y - 0.5f, boxCollider.bounds.center.z );
-		return Physics.Linecast( boxCollider.bounds.center, lineEnd, groundLayer );
+		Vector2 lineEnd = new Vector2( boxCollider.bounds.center.x, boxCollider.bounds.min.y - GROUND_RAY_LENGTH );
+		return Physics2D.Linecast( boxCollider.bounds.center, lineEnd, groundLayer );
 	}
 
 	void FixedUpdate () {
@@ -31,9 +32,6 @@ public class Controller : MonoBehaviour {
 		Debug.DrawLine( boxCollider.bounds.center, capsuleBounds );
 
 		float yVelocity = body.velocity.y;
-		if( IsGrounded() ) {
-			Debug.Log( "grounded" );
-		}
 		if( Input.GetButton( "Jump" ) && IsGrounded() ) {
 			Debug.Log( "jump" );
 			body.AddForce( new Vector2( 0, JUMP_FORCE ) );
