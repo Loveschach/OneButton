@@ -1,2 +1,6 @@
-One Button/Temp/UnityLockfile
 One Button/Temp/
+One Button/Library/
+*.csproj
+*.sln
+*.suo
+*dc_test*
