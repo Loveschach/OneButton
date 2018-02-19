@@ -15,14 +15,15 @@ public static class Actions {
 	//Flap
 	const float FLAP_FORCE = 250f;
 	const float FLAP_DELAY = 0.5f;
-	const int MAX_FLAPS_SINCE_GROUNDED = 3;
 	static int flapsSinceGrounded = 0;
 	static float timeSinceLastFlap = Time.time - FLAP_DELAY;
 
 	//Dash
+
 	const float DASH_DISTANCE = 1f;
 	const float DASH_TIME = 0.1f;
-	const float DASH_DELAY = 0.5f;
+	
+	const int MAX_FLAPS_SINCE_GROUNDED = 3;
 	static float timeSinceDash = Time.time - DASH_TIME;
 	
 
@@ -61,8 +62,9 @@ public static class Actions {
 	}
 
 	public static void ExecuteDashAction( Controller controller ) {
-		if( !IsDashing() && ( Time.time - timeSinceDash > DASH_DELAY ) ) {
+		if( !IsDashing() ) {
 			timeSinceDash = Time.time;
+			controller.transform.position += new Vector3( Time.deltaTime * DASH_DISTANCE, 0 );
 		}
 	}
 
