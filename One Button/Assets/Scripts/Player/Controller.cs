@@ -58,7 +58,7 @@ public class Controller : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		if( !Actions.IsDashing() ) {
+		if( !Actions.IsDashing() && !Actions.IsShielding() ) {
 			float xVelocity = Mathf.Lerp( body.velocity.x, TOP_SPEED * Input.GetAxisRaw( "Horizontal" ), SPEED_DAMPING );
 			body.velocity = new Vector2( xVelocity, body.velocity.y );
 			UpdateDirection();
@@ -66,7 +66,10 @@ public class Controller : MonoBehaviour {
 		
 		UpdateGroundedState();
 
-		if( Input.GetButtonDown( "Action" ) ) {
+		bool isActionClick = Actions.IsActionClick( player.GetCurrentAction() );
+		if( isActionClick && Input.GetButtonDown( "Action" ) ) {
+			Actions.ExecuteCurrentAction( player, this );
+		} else if ( !isActionClick && Input.GetButton( "Action" ) ) {
 			Actions.ExecuteCurrentAction( player, this );
 		}
 		Actions.Update( this );

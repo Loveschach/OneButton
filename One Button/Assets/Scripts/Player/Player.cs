@@ -10,7 +10,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		playerView = GetComponent<PlayerView>();
-		SetCurrentAction( Actions.ButtonActions.JUMP );
+		SetCurrentAction( Actions.ButtonActions.SHIELD );
 	}
 
 	public void SetCurrentAction( Actions.ButtonActions action ) {
@@ -34,7 +34,7 @@ public class Player : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if( health <= 0 ) {
+		if( health <= 0 && !Actions.IsShielding() ) {
 			Die();
 		}
 	}

@@ -5,16 +5,20 @@ using UnityEngine;
 public class PlayerView : MonoBehaviour {
 	SpriteRenderer spriteRenderer;
 	Color currentColor = Color.white;
+	bool usingTemporaryColor = false;
+
 	// Use this for initialization
 	void Start () {
 	}
 
 	public void SetTemporaryColor( Color color ) {
 		spriteRenderer.color = color;
+		usingTemporaryColor = true;
 	}
 
 	public void RestoreColor() {
 		spriteRenderer.color = currentColor;
+		usingTemporaryColor = false;
 	}
 
 	public SpriteRenderer GetRenderer() {
@@ -48,6 +52,10 @@ public class PlayerView : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if ( Actions.IsShielding() ) {
+			SetTemporaryColor( Color.grey );
+		} else if( usingTemporaryColor ) {
+			RestoreColor();
+		}
 	}
 }
