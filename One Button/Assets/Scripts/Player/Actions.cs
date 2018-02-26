@@ -6,7 +6,8 @@ public static class Actions {
 	public enum ButtonActions {
 		JUMP,
 		DASH,
-		FLAP
+		FLAP,
+		SHIELD
 	};
 
 	//Jump
@@ -24,10 +25,12 @@ public static class Actions {
 	const float DASH_TIME = 0.1f;
 	const float DASH_DELAY = 0.5f;
 	static float timeSinceDash = Time.time - DASH_TIME;
+
+	//Shield Action
 	
 
-	public static void ExecuteCurrentAction( Controller controller ) {
-		ButtonActions currentAction = controller.GetCurrentAction();
+	public static void ExecuteCurrentAction( Player player, Controller controller ) {
+		ButtonActions currentAction = player.GetCurrentAction();
 		switch( currentAction ) {
 			case ButtonActions.JUMP:
 				ExecuteJumpAction( controller );
@@ -80,5 +83,5 @@ public static class Actions {
 		if( controller.IsGrounded() ) {
 			controller.GetBody().AddForce( new Vector2( 0, JUMP_FORCE ) );
 		}
-	}
+	}	
 }

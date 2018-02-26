@@ -12,18 +12,15 @@ public class Controller : MonoBehaviour {
 	BoxCollider2D boxCollider;
 	LayerMask groundLayer;
 	Vector2 direction;
-	Actions.ButtonActions currentAction = Actions.ButtonActions.DASH;
+	Player player;
 
 	// Use this for initialization
 	void Start () {
 		body = GetComponent<Rigidbody2D>();
 		boxCollider = GetComponent<BoxCollider2D>();
+		player = GetComponent<Player>();
 		groundLayer = LayerMask.GetMask( "Ground" );
 		direction = Vector2.right;
-	}
-
-	public Actions.ButtonActions GetCurrentAction() {
-		return currentAction;
 	}
 
 	public Rigidbody2D GetBody () {
@@ -70,7 +67,7 @@ public class Controller : MonoBehaviour {
 		UpdateGroundedState();
 
 		if( Input.GetButtonDown( "Action" ) ) {
-			Actions.ExecuteCurrentAction( this );
+			Actions.ExecuteCurrentAction( player, this );
 		}
 		Actions.Update( this );
 	}
