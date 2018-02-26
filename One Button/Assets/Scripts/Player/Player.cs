@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 	Actions.ButtonActions currentAction;
 	PlayerView playerView;
+	int health = 1;
 
 	// Use this for initialization
 	void Start () {
@@ -20,9 +21,21 @@ public class Player : MonoBehaviour {
 	public Actions.ButtonActions GetCurrentAction() {
 		return currentAction;
 	}
-	
+
+	void OnCollisionEnter2D ( Collision2D coll ) {
+		if( coll.gameObject.tag == "Enemy" ) {
+			--health;
+		}
+	}
+
+	void Die() {
+		Destroy( gameObject );
+	}
+
 	// Update is called once per frame
 	void Update () {
-		
+		if( health <= 0 ) {
+			Die();
+		}
 	}
 }

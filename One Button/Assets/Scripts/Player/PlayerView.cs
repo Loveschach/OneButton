@@ -3,19 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerView : MonoBehaviour {
-	SpriteRenderer renderer;
+	SpriteRenderer spriteRenderer;
 	Color currentColor = Color.white;
 	// Use this for initialization
 	void Start () {
-		renderer = GetComponent<SpriteRenderer>();
 	}
 
 	public void SetTemporaryColor( Color color ) {
-		renderer.color = color;
+		spriteRenderer.color = color;
 	}
 
 	public void RestoreColor() {
-		renderer.color = currentColor;
+		spriteRenderer.color = currentColor;
+	}
+
+	public SpriteRenderer GetRenderer() {
+		if( spriteRenderer == null ) {
+			spriteRenderer = GetComponent<SpriteRenderer>();
+		}
+		return spriteRenderer;
 	}
 
 	public void SetColorByAction( Actions.ButtonActions action ) {
@@ -37,7 +43,7 @@ public class PlayerView : MonoBehaviour {
 				currentColor = Color.white;
 				break;
 		}
-		renderer.color = currentColor;
+		GetRenderer().color = currentColor;
 	}
 	
 	// Update is called once per frame
