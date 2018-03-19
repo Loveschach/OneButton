@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
-	Actions.ButtonActions currentAction;
 	PlayerView playerView;
 	int health = 1;
+	public Actions.ButtonActions currentAction;
 
 	// Use this for initialization
 	void Start () {
 		playerView = GetComponent<PlayerView>();
-		SetCurrentAction( Actions.ButtonActions.SHIELD );
+		SetCurrentAction( currentAction );
 	}
 
 	public void SetCurrentAction( Actions.ButtonActions action ) {
