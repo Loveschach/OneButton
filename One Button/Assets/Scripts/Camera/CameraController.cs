@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour {
 	float X_CAMERA_CHANGE_DURATION = 20f;
 	float Y_CAMERA_CHANGE_DURATION = 1f;
 	float DISTANCE_FROM_GROUND = 0.5f;
-	float Y_BOUNDS = 1.5f;
+	float Y_BOUNDS = 3.5f;
 
 	enum CameraState {
 		LOCKED,
@@ -26,6 +26,7 @@ public class CameraController : MonoBehaviour {
 	float xLerpCounter;
 	float yLerpCounter;
 	float initialY;
+	bool platformTransitioning = false;
 
 	// Use this for initialization
 	void Start () {
@@ -122,12 +123,22 @@ public class CameraController : MonoBehaviour {
 			currentGroundY = player.transform.position.y;
 			yLerpCounter = 0;
 			initialY = transform.position.y;
+			platformTransitioning = true;
 			Debug.Log( "Resetting Counter. Current ground: " + currentGroundY + " Player position: " + player.transform.position.y );
 		}
 		float newY = transform.position.y;
 		if( transform.position.y != currentGroundY + DISTANCE_FROM_GROUND ) {
 			yLerpCounter = Mathf.Min( yLerpCounter + ( Time.deltaTime / Y_CAMERA_CHANGE_DURATION ), 1f );
 			newY = Mathf.Lerp( initialY, currentGroundY + DISTANCE_FROM_GROUND, yLerpCounter );
+		}
+
+		if( !platformTransitioning && ( playerPos.y >= ( transform.position.y + Y_BOUNDS ) 
+			|| playerPos.y <= ( transform.position.y - Y_BOUNDS ) ) ) {
+			float newCameraPosition = playerPos.y + Y_BOUNDS;
+			if( playerPos.y >= ( transform.position.y + Y_BOUNDS ) ) {
+				newCameraPosition = playerPos.y - Y_BOUNDS;
+			}
+			newY = newCameraPosition;
 		}
 		return newY;
 	}
@@ -148,5 +159,8 @@ public class CameraController : MonoBehaviour {
 			DrawDebugLines();
 		}
 		transform.position = new Vector3( GetCameraX(), GetCameraY(), transform.position.z );
+		if ( platformTransitioning && transform.position.y != ( currentGroundY + DISTANCE_FROM_GROUND ) ) {
+			platformTransitioning = false;
+		}
 	}
 }
