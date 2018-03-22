@@ -144,6 +144,8 @@ public class CameraController : MonoBehaviour {
 	}
 
 	void DrawDebugLines() {
+		float cameraX1 = transform.position.x - cameraWidth / 2;
+		float cameraX2 = transform.position.x + cameraWidth / 2;
 		float cameraY1 = transform.position.y - cameraHeight / 2;
 		float cameraY2 = transform.position.y + cameraHeight / 2;
 		Debug.DrawLine( new Vector3( transform.position.x - X_BOUNDS_CLOSE, cameraY1, transform.position.z ), new Vector3( transform.position.x - X_BOUNDS_CLOSE, cameraY2, transform.position.z ) );
@@ -151,6 +153,9 @@ public class CameraController : MonoBehaviour {
 
 		Debug.DrawLine( new Vector3( transform.position.x + X_BOUNDS_CLOSE, cameraY1, transform.position.z ), new Vector3( transform.position.x + X_BOUNDS_CLOSE, cameraY2, transform.position.z ) );
 		Debug.DrawLine( new Vector3( transform.position.x + X_BOUNDS_FAR, cameraY1, transform.position.z ), new Vector3( transform.position.x + X_BOUNDS_FAR, cameraY2, transform.position.z ) );
+
+		Debug.DrawLine( new Vector3( cameraX1, transform.position.y + Y_BOUNDS, transform.position.z ), new Vector3( cameraX2, transform.position.y + Y_BOUNDS, transform.position.z ) );
+		Debug.DrawLine( new Vector3( cameraX1, transform.position.y - Y_BOUNDS, transform.position.z ), new Vector3( cameraX2, transform.position.y - Y_BOUNDS, transform.position.z ) );
 	}
 	
 	// Update is called once per frame
