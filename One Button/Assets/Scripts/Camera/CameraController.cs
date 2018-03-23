@@ -127,7 +127,7 @@ public class CameraController : MonoBehaviour {
 			Debug.Log( "Resetting Counter. Current ground: " + currentGroundY + " Player position: " + player.transform.position.y );
 		}
 		float newY = transform.position.y;
-		if( transform.position.y != currentGroundY + DISTANCE_FROM_GROUND ) {
+		if( platformTransitioning && transform.position.y != currentGroundY + DISTANCE_FROM_GROUND ) {
 			yLerpCounter = Mathf.Min( yLerpCounter + ( Time.deltaTime / Y_CAMERA_CHANGE_DURATION ), 1f );
 			newY = Mathf.Lerp( initialY, currentGroundY + DISTANCE_FROM_GROUND, yLerpCounter );
 		}
@@ -140,6 +140,7 @@ public class CameraController : MonoBehaviour {
 			}
 			newY = newCameraPosition;
 		}
+
 		return newY;
 	}
 
