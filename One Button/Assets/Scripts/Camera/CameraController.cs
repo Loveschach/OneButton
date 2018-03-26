@@ -101,6 +101,7 @@ public class CameraController : MonoBehaviour {
 				float cameraCenter = isRight ? playerPos.x + X_BOUNDS_CLOSE : playerPos.x - X_BOUNDS_CLOSE;
 				xLerpCounter = Mathf.Min( xLerpCounter + ( Time.deltaTime / X_CAMERA_CHANGE_DURATION ), 1f );
 				cameraX = Mathf.Lerp( transform.position.x, cameraCenter, xLerpCounter );
+				Debug.Log( "Updating direction switch " + xLerpCounter );
 				break;
 
 			case ( CameraState.FORWARD ):
@@ -124,7 +125,6 @@ public class CameraController : MonoBehaviour {
 			yLerpCounter = 0;
 			initialY = transform.position.y;
 			platformTransitioning = true;
-			Debug.Log( "Resetting Counter. Current ground: " + currentGroundY + " Player position: " + player.transform.position.y );
 		}
 		float newY = transform.position.y;
 		if( platformTransitioning && transform.position.y != currentGroundY + DISTANCE_FROM_GROUND ) {
