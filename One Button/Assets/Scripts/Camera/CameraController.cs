@@ -9,6 +9,10 @@ public class CameraController : MonoBehaviour {
 	float Y_CAMERA_CHANGE_DURATION = 1f;
 	float DISTANCE_FROM_GROUND = 0.5f;
 	float Y_BOUNDS = 3.5f;
+	public float cameraXBounds1 = 0;
+	public float cameraXBounds2;
+	public float cameraYBounds1 = 0;
+	public float cameraYBounds2;
 
 	enum CameraState {
 		LOCKED,
@@ -113,6 +117,11 @@ public class CameraController : MonoBehaviour {
 		}
 
 		cameraState = newCameraState;
+		if( GameUtils.DEBUG_MODE && GameUtils.DEBUG_CAMERA_POS ) {
+			Debug.Log( "X: " + cameraX );
+		}
+		cameraX = Mathf.Max( cameraX, cameraXBounds1 );
+		cameraX = Mathf.Min( cameraX, cameraXBounds2 );
 		return cameraX;
 	}
 
@@ -124,10 +133,10 @@ public class CameraController : MonoBehaviour {
 			initialY = transform.position.y;
 			platformTransitioning = true;
 		}
-		float newY = transform.position.y;
+		float cameraY = transform.position.y;
 		if( platformTransitioning && transform.position.y != currentGroundY + DISTANCE_FROM_GROUND ) {
 			yLerpCounter = Mathf.Min( yLerpCounter + ( Time.deltaTime / Y_CAMERA_CHANGE_DURATION ), 1f );
-			newY = Mathf.Lerp( initialY, currentGroundY + DISTANCE_FROM_GROUND, yLerpCounter );
+			cameraY = Mathf.Lerp( initialY, currentGroundY + DISTANCE_FROM_GROUND, yLerpCounter );
 		}
 
 		if( !platformTransitioning && ( playerPos.y >= ( transform.position.y + Y_BOUNDS ) 
@@ -136,10 +145,15 @@ public class CameraController : MonoBehaviour {
 			if( playerPos.y >= ( transform.position.y + Y_BOUNDS ) ) {
 				newCameraPosition = playerPos.y - Y_BOUNDS;
 			}
-			newY = newCameraPosition;
+			cameraY = newCameraPosition;
 		}
 
-		return newY;
+		if( GameUtils.DEBUG_MODE && GameUtils.DEBUG_CAMERA_POS ) {
+			Debug.Log( "Y: " + cameraY );
+		}
+		cameraY = Mathf.Max( cameraY, cameraYBounds1 );
+		cameraY = Mathf.Min( cameraY, cameraYBounds2 );
+		return cameraY;
 	}
 
 	void DrawDebugLines() {

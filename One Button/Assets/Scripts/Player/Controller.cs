@@ -60,7 +60,6 @@ public class Controller : MonoBehaviour {
 	void FixedUpdate () {
 		if( !Actions.IsDashing() && !Actions.IsShielding() ) {
 			float xVelocity = Mathf.Lerp( body.velocity.x, TOP_SPEED * Input.GetAxisRaw( "Horizontal" ), SPEED_DAMPING );
-			Debug.Log( xVelocity + " at " + Time.time );
 			body.velocity = new Vector2( xVelocity, body.velocity.y );
 			UpdateDirection();
 		}
