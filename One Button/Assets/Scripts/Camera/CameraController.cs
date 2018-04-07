@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour {
-	public bool DEBUG_CAMERA = false;
 	float X_BOUNDS_CLOSE = 2f;
 	float X_BOUNDS_FAR = 4f;
 	float X_CAMERA_CHANGE_DURATION = 20f;
@@ -101,7 +100,6 @@ public class CameraController : MonoBehaviour {
 				float cameraCenter = isRight ? playerPos.x + X_BOUNDS_CLOSE : playerPos.x - X_BOUNDS_CLOSE;
 				xLerpCounter = Mathf.Min( xLerpCounter + ( Time.deltaTime / X_CAMERA_CHANGE_DURATION ), 1f );
 				cameraX = Mathf.Lerp( transform.position.x, cameraCenter, xLerpCounter );
-				Debug.Log( "Updating direction switch " + xLerpCounter );
 				break;
 
 			case ( CameraState.FORWARD ):
@@ -161,7 +159,7 @@ public class CameraController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void LateUpdate () {
-		if( DEBUG_CAMERA ) {
+		if( GameUtils.DEBUG_MODE ) {
 			DrawDebugLines();
 		}
 		transform.position = new Vector3( GetCameraX(), GetCameraY(), transform.position.z );

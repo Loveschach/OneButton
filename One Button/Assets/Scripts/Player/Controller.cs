@@ -9,7 +9,7 @@ public class Controller : MonoBehaviour {
 	const float GROUND_RAY_LENGTH = 0.25f;
 	bool grounded;
 	Rigidbody2D body;
-	BoxCollider2D boxCollider;
+	CircleCollider2D controllerCollider;
 	LayerMask groundLayer;
 	Vector2 direction;
 	Player player;
@@ -17,7 +17,7 @@ public class Controller : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		body = GetComponent<Rigidbody2D>();
-		boxCollider = GetComponent<BoxCollider2D>();
+		controllerCollider = GetComponent<CircleCollider2D>();
 		player = GetComponent<Player>();
 		groundLayer = LayerMask.GetMask( "Ground" );
 		direction = Vector2.right;
@@ -32,8 +32,8 @@ public class Controller : MonoBehaviour {
 	}
 	
 	public bool IsGrounded() {
-		Vector2 lineEnd = new Vector2( boxCollider.bounds.center.x, boxCollider.bounds.min.y - GROUND_RAY_LENGTH );
-		return Physics2D.Linecast( boxCollider.bounds.center, lineEnd, groundLayer );
+		Vector2 lineEnd = new Vector2( controllerCollider.bounds.center.x, controllerCollider.bounds.min.y - GROUND_RAY_LENGTH );
+		return Physics2D.Linecast( controllerCollider.bounds.center, lineEnd, groundLayer );
 	}
 
 	void UpdateGroundedState() {
@@ -60,6 +60,7 @@ public class Controller : MonoBehaviour {
 	void FixedUpdate () {
 		if( !Actions.IsDashing() && !Actions.IsShielding() ) {
 			float xVelocity = Mathf.Lerp( body.velocity.x, TOP_SPEED * Input.GetAxisRaw( "Horizontal" ), SPEED_DAMPING );
+			Debug.Log( xVelocity + " at " + Time.time );
 			body.velocity = new Vector2( xVelocity, body.velocity.y );
 			UpdateDirection();
 		}
