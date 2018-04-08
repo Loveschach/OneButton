@@ -33,7 +33,7 @@ public class Controller : MonoBehaviour {
 	
 	public bool IsGrounded() {
 		Vector2 lineEnd = new Vector2( controllerCollider.bounds.center.x, controllerCollider.bounds.min.y - GROUND_RAY_LENGTH );
-		return Physics2D.Linecast( controllerCollider.bounds.center, lineEnd, groundLayer );
+		return Physics2D.Linecast( controllerCollider.bounds.center, lineEnd, groundLayer ) && body.velocity.y <= 0;
 	}
 
 	void UpdateGroundedState() {
@@ -66,11 +66,14 @@ public class Controller : MonoBehaviour {
 		
 		UpdateGroundedState();
 
-		bool isActionClick = Actions.IsActionClick( player.GetCurrentAction() );
-		if( isActionClick && Input.GetButtonDown( "Action" ) ) {
-			Actions.ExecuteCurrentAction( player, this );
-		} else if ( !isActionClick && Input.GetButton( "Action" ) ) {
-			Actions.ExecuteCurrentAction( player, this );
+		if( Input.GetButtonDown( "Action" ) ) {
+			bool success = Actions.ExecuteCurrentAction( player, this );
+			if( success ) {
+				Actions.holdingAction = true;
+			}
+		}
+		if ( !Input.GetButton( "Action" ) && Actions.holdingAction ) {
+			Actions.holdingAction = false;
 		}
 		Actions.Update( this );
 	}

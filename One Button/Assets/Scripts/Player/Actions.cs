@@ -11,9 +11,13 @@ public static class Actions {
 	};
 
 	const float DEFAULT_TIME = -100f;
+	public static bool holdingAction = false;
 
 	//Jump
-	const float JUMP_FORCE = 100f;
+	const float JUMP_FORCE = 200f;
+	const float JUMP_HOLD_FORCE = 15f;
+	const float JUMP_HOLD_TIME = 0.2f;
+	static float jumpStartTime = DEFAULT_TIME;
 
 	//Flap
 	const float FLAP_FORCE = 250f;
@@ -33,41 +37,27 @@ public static class Actions {
 	const float SHIELD_DELAY = 0.2f;
 	static float shieldStartTime = DEFAULT_TIME;
 
-	public static void ExecuteCurrentAction( Player player, Controller controller ) {
+	public static bool ExecuteCurrentAction( Player player, Controller controller ) {
 		ButtonActions currentAction = player.GetCurrentAction();
+		bool success = false;
 		switch( currentAction ) {
 			case ButtonActions.JUMP:
-				ExecuteJumpAction( controller );
+				success = ExecuteJumpAction( controller );
 				break;
 			case ButtonActions.DASH:
-				ExecuteDashAction( controller );
+				success = ExecuteDashAction( controller );
 				break;
 			case ButtonActions.FLAP:
-				ExecuteFlapAction( controller );
+				success = ExecuteFlapAction( controller );
 				break;
 			case ButtonActions.SHIELD:
-				ExecuteShieldAction( controller );
+				success = ExecuteShieldAction( controller );
 				break;
 			default:
 				Debug.Assert( false, "Attempting to get force for non-existent action." );
 				break;
 		}
-	}
-
-	public static bool IsActionClick( ButtonActions action ) {
-		switch( action ) {
-			case ButtonActions.JUMP:
-				return false;
-			case ButtonActions.DASH:
-				return true;
-			case ButtonActions.FLAP:
-				return true;
-			case ButtonActions.SHIELD:
-				return true;
-			default:
-				Debug.Assert( false, "Attempt to check non-existent action." );
-				return false;
-		}
+		return success;
 	}
 
 	static bool IsDefault( float time ) {
@@ -92,15 +82,23 @@ public static class Actions {
 			float dashDistance = Time.deltaTime / DASH_TIME;
 			controller.transform.position += new Vector3( direction.x * DASH_DISTANCE * dashDistance, 0, 0 );
 		}
-	}
 
-	public static void ExecuteDashAction( Controller controller ) {
-		if( !IsDashing() && ( Time.time - dashStartTime > DASH_DELAY ) ) {
-			dashStartTime = Time.time;
+		if( ( Time.time - jumpStartTime ) <= JUMP_HOLD_TIME && holdingAction ) {
+			AddJumpForce( controller, JUMP_HOLD_FORCE );
 		}
 	}
 
-	public static void ExecuteFlapAction( Controller controller ) {
+	public static bool ExecuteDashAction( Controller controller ) {
+		if( !IsDashing() && ( Time.time - dashStartTime > DASH_DELAY ) ) {
+			dashStartTime = Time.time;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public static bool ExecuteFlapAction( Controller controller ) {
 		bool canFlap = IsDefault( timeSinceLastFlap );
 		if( !canFlap ) {
 			bool flapDelayPassed = ( Time.time - timeSinceLastFlap ) >= FLAP_DELAY;
@@ -111,16 +109,27 @@ public static class Actions {
 			controller.GetBody().AddForce( new Vector2( 0, FLAP_FORCE ) );
 			timeSinceLastFlap = Time.time;
 			flapsSinceGrounded += 1;
+			return true;
 		}
+
+		return false;
 	}
 
-	public static void ExecuteJumpAction( Controller controller ) {
+	private static void AddJumpForce( Controller controller, float force ) {
+		controller.GetBody().AddForce( new Vector2( 0, force ) );
+	}
+
+	public static bool ExecuteJumpAction( Controller controller ) {
 		if( controller.IsGrounded() ) {
-			controller.GetBody().AddForce( new Vector2( 0, JUMP_FORCE ) );
+			jumpStartTime = Time.time;
+			AddJumpForce( controller, JUMP_FORCE );
+			return true;
 		}
+
+		return false;
 	}
 
-	public static void ExecuteShieldAction ( Controller controller ) {
+	public static bool ExecuteShieldAction ( Controller controller ) {
 		bool canShield = IsDefault( shieldStartTime );
 		if( !canShield ) {
 			canShield = !IsShielding() && ( Time.time - shieldStartTime ) > ( SHIELD_TIME + SHIELD_DELAY );
@@ -128,6 +137,8 @@ public static class Actions {
 
 		if( canShield ) {
 			shieldStartTime = Time.time;
+			return true;
 		}
+		return false;
 	}
 }
