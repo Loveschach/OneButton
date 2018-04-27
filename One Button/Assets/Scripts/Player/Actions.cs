@@ -122,6 +122,9 @@ public static class Actions {
 	public static bool ExecuteJumpAction( Controller controller ) {
 		if( controller.IsGrounded() ) {
 			jumpStartTime = Time.time;
+			// Zero out velocity before we add jump force so the downwards velocity doesn't cancel out the force.
+			Rigidbody2D body = controller.GetBody();
+			body.velocity = new Vector2( body.velocity.x, 0 );
 			AddJumpForce( controller, JUMP_FORCE );
 			return true;
 		}

@@ -36,17 +36,6 @@ public class Controller : MonoBehaviour {
 		return Physics2D.Linecast( controllerCollider.bounds.center, lineEnd, groundLayer ) && body.velocity.y <= 0;
 	}
 
-	void UpdateGroundedState() {
-		bool isGrounded = IsGrounded();
-		if( isGrounded && !grounded ) {
-			grounded = true;
-			Actions.PlayerGrounded();
-		}
-		else if( !isGrounded && grounded ) {
-			grounded = false;
-		}
-	}
-
 	void UpdateDirection() {
 		float horizontalInput = Input.GetAxisRaw( "Horizontal" );
 		if( horizontalInput > 0 ) {
@@ -57,24 +46,24 @@ public class Controller : MonoBehaviour {
 		}
 	}
 
-	void FixedUpdate () {
-		if( !Actions.IsDashing() && !Actions.IsShielding() ) {
-			float xVelocity = Mathf.Lerp( body.velocity.x, TOP_SPEED * Input.GetAxisRaw( "Horizontal" ), SPEED_DAMPING );
-			body.velocity = new Vector2( xVelocity, body.velocity.y );
-			UpdateDirection();
-		}
-		
-		UpdateGroundedState();
-
+	void Update() {
 		if( Input.GetButtonDown( "Action" ) ) {
 			bool success = Actions.ExecuteCurrentAction( player, this );
 			if( success ) {
 				Actions.holdingAction = true;
 			}
 		}
-		if ( !Input.GetButton( "Action" ) && Actions.holdingAction ) {
+		if( !Input.GetButton( "Action" ) && Actions.holdingAction ) {
 			Actions.holdingAction = false;
 		}
 		Actions.Update( this );
+	}
+
+	void FixedUpdate () {
+		if( !Actions.IsDashing() && !Actions.IsShielding() ) {
+			float xVelocity = Mathf.Lerp( body.velocity.x, TOP_SPEED * Input.GetAxisRaw( "Horizontal" ), SPEED_DAMPING );
+			body.velocity = new Vector2( xVelocity, body.velocity.y );
+			UpdateDirection();
+		}
 	}
 }
